@@ -32,5 +32,11 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-  profiles:
-    active: test
+  ldap:
+    base: dc=imooc,dc=com
+    embedded:
+      base-dn: dc=imooc,dc=com
+      ldif: classpath:test-ldap-server.ldif
+      port: 8389
+    urls: ldap://localhost:8389/
+  profiles: test

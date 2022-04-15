@@ -1,6 +1,8 @@
 package com.imooc.uaa.config;
 
 import com.imooc.uaa.config.dsl.ClientErrorLoggingConfigurer;
+import com.imooc.uaa.security.auth.ldap.LDAPMultiAuthenticationProvider;
+import com.imooc.uaa.security.auth.ldap.LDAPUserRepo;
 import com.imooc.uaa.security.userdetails.UserDetailsPasswordServiceImpl;
 import com.imooc.uaa.security.userdetails.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -36,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final SecurityProblemSupport problemSupport;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final UserDetailsPasswordServiceImpl userDetailsPasswordServiceImpl;
+
+    private final LDAPUserRepo ldapUserRepo;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -66,13 +71,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/h2-console/**");
     }
 
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth
+//            .userDetailsService(userDetailsServiceImpl) // 配置 AuthenticationManager 使用 userService
+//            .passwordEncoder(passwordEncoder()) // 配置 AuthenticationManager 使用 userService
+//            .userDetailsPasswordManager(userDetailsPasswordServiceImpl); // 配置密码自动升级服务
+//    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .userDetailsService(userDetailsServiceImpl) // 配置 AuthenticationManager 使用 userService
-            .passwordEncoder(passwordEncoder()) // 配置 AuthenticationManager 使用 userService
-            .userDetailsPasswordManager(userDetailsPasswordServiceImpl); // 配置密码自动升级服务
+        auth.authenticationProvider(daoAuthenticationProvider());
+        auth.authenticationProvider(ldapMultiAuthenticationProvider());
     }
+
+    @Bean
+    DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsServiceImpl);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsPasswordService(userDetailsPasswordServiceImpl);
+
+        return daoAuthenticationProvider;
+    }
+
+    @Bean
+    LDAPMultiAuthenticationProvider ldapMultiAuthenticationProvider() {
+        val ldapMultiAuthenticationProvider = new LDAPMultiAuthenticationProvider(ldapUserRepo);
+        return ldapMultiAuthenticationProvider;
+    }
+
 
     @Bean
     @Override

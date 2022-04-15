@@ -1,6 +1,7 @@
 package com.imooc.uaa.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.imooc.uaa.security.auth.ldap.LDAPMultiAuthenticationProvider;
 import com.imooc.uaa.security.filter.RestAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -28,6 +31,9 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ObjectMapper objectMapper;
 
+    private final LDAPMultiAuthenticationProvider ldapMultiAuthenticationProvider;
+    private final DaoAuthenticationProvider daoAuthenticationProvider;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -35,13 +41,10 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .failureUrl("/login?error")
                 .defaultSuccessUrl("/")
-//                .failureHandler(jsonLoginFailureHandler())
-//                .successHandler(new UaaSuccessHandler())
                 .permitAll())
             .logout(logout -> logout
                     .logoutUrl("/perform_logout")
                     .logoutSuccessUrl("/login")
-//                .logoutSuccessHandler(jsonLogoutSuccessHandler())
             )
             .rememberMe(rememberMe -> rememberMe
                 .key("someSecret")
@@ -50,6 +53,14 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests(authorizeRequests -> authorizeRequests
                 .anyRequest().authenticated());
     }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider);
+        auth.authenticationProvider(ldapMultiAuthenticationProvider);
+    }
+
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
