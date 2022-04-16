@@ -21,3 +21,8 @@ spring:
     active: "dev"
   resources:
     add-mappings: false
+
+mooc:
+  jwt:
+    access-token-expire-time: 300000
+    refresh-token-expire-time: 2592000000

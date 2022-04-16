@@ -1,19 +1,29 @@
 package com.imooc.uaa.domain.dto;
 
+import com.imooc.uaa.config.Constants;
 import com.imooc.uaa.validation.PasswordMatches;
 import com.imooc.uaa.validation.ValidEmail;
 import com.imooc.uaa.validation.ValidPassword;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@With
+@Builder
 @PasswordMatches
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto implements Serializable {
     @NotNull
-    @Size(min = 1)
+    @Size(min = 3, max = 50)
+    private String username;
+
+    @NotNull
+    @Size(min = 1, max = 50)
     private String name;
 
     @ValidPassword
@@ -28,6 +38,8 @@ public class UserDto implements Serializable {
     @Size(min = 1)
     private String email;
 
-    private boolean isUsing2FA;
+    @Pattern(regexp = Constants.PATTERN_MOBILE)
+    @NotNull
+    private String mobile;
 
 }

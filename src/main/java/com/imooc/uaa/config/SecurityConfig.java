@@ -3,6 +3,7 @@ package com.imooc.uaa.config;
 import com.imooc.uaa.config.dsl.ClientErrorLoggingConfigurer;
 import com.imooc.uaa.security.auth.ldap.LDAPMultiAuthenticationProvider;
 import com.imooc.uaa.security.auth.ldap.LDAPUserRepo;
+import com.imooc.uaa.security.jwt.JwtFilter;
 import com.imooc.uaa.security.userdetails.UserDetailsPasswordServiceImpl;
 import com.imooc.uaa.security.userdetails.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 import java.util.ArrayList;
@@ -42,6 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final LDAPUserRepo ldapUserRepo;
 
+    private final JwtFilter jwtFilter;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -58,6 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(problemSupport))
+//            .authorizeRequests(authorizeRequests -> authorizeRequests
+//                                    .antMatchers("/admin/**").hasRole("ADMIN")
+//                                    .anyRequest().authenticated())
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             ;
     }
 

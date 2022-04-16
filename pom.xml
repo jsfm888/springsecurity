@@ -20,6 +20,7 @@
         <passay.version>1.6.0</passay.version>
         <problem.version>0.26.1</problem.version>
         <bootstrap.version>4.5.0</bootstrap.version>
+        <jjwt.version>0.11.2</jjwt.version>
     </properties>
 
     <dependencies>
@@ -51,6 +52,26 @@
             <version>${passay.version}</version>
         </dependency>
 
+        <!-- JWT 依赖开始 -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- JWT 依赖结束 -->
+
         <!-- LDAP 依赖开始 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -65,7 +86,6 @@
             <artifactId>unboundid-ldapsdk</artifactId>
         </dependency>
         <!-- LDAP 依赖结束 -->
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

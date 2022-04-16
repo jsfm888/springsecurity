@@ -1,6 +1,7 @@
 package com.imooc.uaa.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 /**
  * 角色实体类，实现 GrantedAuthority 接口
  */
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
