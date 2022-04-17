@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @DataLdapTest
 public class LDAPUserRepoIntTests {
 

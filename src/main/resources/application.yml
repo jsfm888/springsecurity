@@ -9,6 +9,17 @@ server:
 spring:
   datasource:
     initialization-mode: embedded
+  mail:
+    host: ${SMTP_HOST}
+    password: ${SMTP_PASSWORD}
+    port: ${SMTP_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    username: ${SMTP_USERNAME}
   messages:
     always-use-message-format: false
     basename: messages
@@ -26,3 +37,5 @@ mooc:
   jwt:
     access-token-expire-time: 300000
     refresh-token-expire-time: 2592000000
+  email-provider:
+    name: smtp

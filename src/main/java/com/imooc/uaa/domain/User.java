@@ -125,6 +125,25 @@ public class User implements UserDetails, Serializable {
     @Column(length = 254, unique = true, nullable = false)
     private String email;
 
+
+    /**
+     * 是否启用两步验证
+     */
+    @NotNull
+    @Builder.Default
+    @Column(name = "using_mfa", nullable = false)
+    private boolean usingMfa = false;
+
+    /**
+     * 两步验证的key
+     */
+    @NotNull
+    @Getter
+    @Setter
+    @JsonIgnore
+    @Column(name = "mfa_key", nullable = false)
+    private String mfaKey;
+
     /**
      * 角色列表，使用 Set 确保不重复
      */
@@ -157,5 +176,9 @@ public class User implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public boolean isUsingMfa() {
+        return usingMfa;
     }
 }
